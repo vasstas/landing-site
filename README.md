@@ -119,3 +119,43 @@ sudo systemctl restart nginx
 - `python manage.py createsuperuser` — создать администратора.
 - `python manage.py collectstatic` — обновить статику после изменений.
 - `sudo systemctl restart gunicorn-landing` — перезапустить сервис после деплоя.
+
+## GitHub репозиторий
+Код ожидается в репозитории `git@github.com:vasstas/landing-site.git` (путь можно поменять). Полезные шаги:
+
+1. Авторизуйтесь в GitHub через SSH (сгенерируйте ключ и добавьте его в аккаунт `vasstas`).
+2. Создайте пустой репозиторий `landing-site` в профиле `vasstas`.
+3. В каталоге проекта убедитесь, что настроен удалённый `origin`:
+   ```bash
+   git remote -v
+   ```
+   При необходимости поменяйте адрес:
+   ```bash
+   git remote set-url origin git@github.com:vasstas/landing-site.git
+   ```
+4. Коммитьте изменения и пушьте их на `main`:
+   ```bash
+   git add .
+   git commit -m "Describe change"
+   git push origin main
+   ```
+
+## Автоматический деплой
+После первичной настройки сервера можно обновлять продакшн командой `./scripts/deploy.sh`. Скрипт делает следующее:
+
+- запускает `manage.py check` и `manage.py test` локально;
+- пушит выбранную ветку на GitHub;
+- через SSH подключается к серверу, подтягивает код (git pull), устанавливает зависимости, выполняет миграции/collectstatic и перезапускает `gunicorn-landing`.
+
+### Как пользоваться
+```bash
+DEPLOY_SSH=ubuntu@94.249.192.193 \
+DEPLOY_APP_USER=landing \
+DEPLOY_DIR=/srv/landing \
+DEPLOY_REPO=git@github.com:vasstas/landing-site.git \
+./scripts/deploy.sh
+```
+
+Необязательные переменные: `DEPLOY_BRANCH` (по умолчанию `main`), `DEPLOY_SERVICE` (по умолчанию `gunicorn-landing`), `DEPLOY_VENV` (по умолчанию `$DEPLOY_DIR/.venv`). Скрипт предполагает, что пользователь `ubuntu` может выполнять `sudo` без пароля и переключаться на системного пользователя приложения (`landing`).
+
+> ⚠️ При первом запуске скрипт автоматически клонирует репозиторий в `/srv/landing`, создаёт виртуальное окружение и перезапускает systemd-сервис. Убедитесь, что на сервере предварительно созданы пользователь `landing`, директория `/srv/landing`, unit-файл `gunicorn-landing.service` и Nginx-конфигурация.
