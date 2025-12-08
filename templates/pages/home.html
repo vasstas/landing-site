@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Стартовый Django-сайт</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <main class="hero">
+        <div class="hero__card">
+            <p class="hero__badge">VDS · PostgreSQL · Gunicorn</p>
+            <h1>{{ headline }}</h1>
+            <p class="hero__lead">{{ subline }}</p>
+            <a class="hero__cta" href="#deploy">{{ cta_label }}</a>
+        </div>
+        <section id="deploy" class="deploy">
+            <h2>Минимальные шаги</h2>
+            <ol>
+                <li>Скопируйте проект на сервер 94.249.192.193 (git или rsync).</li>
+                <li>Создайте файл <code>.env</code> с секретами и строкой подключения PostgreSQL.</li>
+                <li>Выполните миграции, соберите статику, запустите Gunicorn под systemd.</li>
+                <li>Настройте Nginx как reverse proxy и перезапустите службу.</li>
+            </ol>
+            <p class="deploy__footnote">Детальные инструкции смотрите в README.md.</p>
+        </section>
+    </main>
+</body>
+</html>
