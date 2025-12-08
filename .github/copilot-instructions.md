@@ -14,6 +14,8 @@
 
 - [x] Launch the Project (Ran dev server task for smoke test; will relaunch when user confirms debug mode)
 
+- [x] Implement Internationalization (Configured I18n, added translations for EN/EL/RU, added language switcher)
+
 - [x] Ensure Documentation is Complete (README updated, removed HTML comments from this file)
 
 - Work through each checklist item systematically.
