@@ -35,6 +35,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -113,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 from django.utils.translation import gettext_lazy as _
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'en'
 
 LANGUAGES = [
     ('en', _('English')),
@@ -138,6 +139,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 staticfiles_backend = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 if not DEBUG:

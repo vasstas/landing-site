@@ -1,0 +1,45 @@
+#!/usr/bin/expect
+
+set timeout 300
+set host "94.249.192.193"
+set user "ubuntu"
+set password "m4qy62MQ"
+
+spawn ssh $user@$host
+
+expect {
+    -re ".*Are you sure you want to continue connecting.*" { send "yes\r"; exp_continue }
+    -re ".*password:.*" { send "$password\r" }
+}
+
+expect -re "\[#$]"
+send "cd /srv/landing\r"
+
+expect -re "\[#$]"
+send "git pull\r"
+
+expect -re "\[#$]"
+send "source .venv/bin/activate\r"
+
+expect -re "\[#$]"
+send "pip install -r requirements.txt\r"
+
+expect -re "\[#$]"
+send "python manage.py migrate\r"
+
+expect -re "\[#$]"
+send "python manage.py collectstatic --noinput\r"
+
+expect -re "\[#$]"
+send "python manage.py compilemessages\r"
+
+expect -re "\[#$]"
+send "sudo systemctl restart gunicorn\r"
+
+expect {
+    -re ".*password for.*" { send "$password\r"; exp_continue }
+    -re "\[#$]" { }
+}
+
+send "exit\r"
+expect eof

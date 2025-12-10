@@ -16,21 +16,23 @@
     <div class="bg-grid"></div>
     <header class="header">
         <div class="container header__container">
-            <div class="header__logo">VASSTA</div>
+            <div class="header__logo">VASSTA::COM</div>
             <nav class="header__nav">
-                <a href="#expertise">{% trans "Компетенции" %}</a>
-                <a href="#services">{% trans "Услуги" %}</a>
-                <a href="#process">{% trans "Процесс" %}</a>
+                <a href="#" id="nav-expertise-link" class="nav-link-expertise">{% trans "Экспертиза" %}</a>
+                <a href="#services" class="nav-link-desktop">{% trans "Услуги" %}</a>
+                <a href="#process" class="nav-link-desktop">{% trans "Процесс" %}</a>
                 <a href="#contact" class="header__cta">{% trans "Связаться" %}</a>
-                <div class="lang-switch">
-                    {% get_current_language as LANGUAGE_CODE %}
-                    {% get_available_languages as LANGUAGES %}
-                    {% get_language_info_list for LANGUAGES as languages %}
-                    {% for language in languages %}
-                        <a href="{% if language.code == 'ru' %}/{% else %}/{{ language.code }}/{% endif %}" class="{% if language.code == LANGUAGE_CODE %}active{% endif %}">
-                            {{ language.code|upper }}
-                        </a>
-                    {% endfor %}
+                
+                <div class="lang-switch-container">
+                    <button class="lang-toggle" id="lang-toggle">
+                        {{ LANGUAGE_CODE|upper }} <span class="arrow">▼</span>
+                    </button>
+                    <div class="lang-switch" id="lang-switch-menu">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        <a href="{{ lang_urls.en }}" class="{% if LANGUAGE_CODE == 'en' %}active{% endif %}">EN</a>
+                        <a href="{{ lang_urls.el }}" class="{% if LANGUAGE_CODE == 'el' %}active{% endif %}">EL</a>
+                        <a href="{{ lang_urls.ru }}" class="{% if LANGUAGE_CODE == 'ru' %}active{% endif %}">RU</a>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -39,10 +41,10 @@
     <main>
         <section class="hero">
             <div class="container">
-                <div class="hero__content">
-                    <p class="hero__badge">{% trans "Critical Infrastructure Protection" %}</p>
-                    <h1>{% trans "Кибербезопасность Суперъяхт: Защита КИИ и VIP-Приватности" %}</h1>
-                    <p class="hero__lead">{% trans "Мы обеспечиваем абсолютную конфиденциальность, безопасность навигации и готовность к оперативному реагированию на угрозы 24/7." %}</p>
+                                <div class="hero__content">
+                    <div class="hero__badge">{% trans "Since 2004" %}</div>
+                    <h1>{% trans "Кибербезопасность Яхт: Защита критической инфраструктуры и VIP-Приватности" %}</h1>
+                    <p>{% trans "От трирем до мегаяхт: Эволюция безопасности на море." %}</p>
                     <div class="hero__actions">
                         <a class="btn btn--primary" href="#contact">{% trans "Запросить Конфиденциальный Аудит" %}</a>
                         <a class="btn btn--secondary" href="#expertise">{% trans "Почему мы" %}</a>
@@ -67,7 +69,7 @@
                         <p>{% trans "Прослушивание деловых переговоров владельца через скомпрометированные сети и незащищенные каналы связи." %}</p>
                     </div>
                     <div class="card">
-                        <h3>{% trans "🚨 Неготовность к Кризису" %}</h3>
+                        <h3>{% trans "🚨 Неготовность к киберинцидентам" %}</h3>
                         <p>{% trans "Отсутствие четкого плана действий при атаке — что делать, когда взломали Starlink или заблокировали сеть." %}</p>
                     </div>
                 </div>
@@ -86,18 +88,47 @@
                     </p>
                 </div>
                 <div class="grid grid--3">
+                    {% for standard in standards %}
                     <div class="service-item">
-                        <h3>{% trans "🛡️ Защита Приватности" %}</h3>
-                        <p>{% trans "Мы строим «Чистые зоны» на борту, используя строжайшие методики, разработанные для защиты конфиденциальной информации высшего уровня и коммерческой тайны." %}</p>
+                        <h3>{{ standard.title }}</h3>
+                        <p>{{ standard.description }}</p>
                     </div>
-                    <div class="service-item">
-                        <h3>{% trans "⚡ Оперативное Реагирование (IR)" %}</h3>
-                        <p>{% trans "Выстраиваемая нами система киберзащиты обеспечивает автоматическое выявление, локализацию и нейтрализацию угроз, а также проведение цифровых расследований для быстрого восстановления систем." %}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Mobile Expertise Section (Hidden on Desktop) -->
+        <section id="mobile-expertise-section" class="mobile-expertise-section mobile-only">
+            <div class="container">
+                <h2>{% trans "Техническая Экспертиза" %}</h2>
+                
+                <!-- Horizontal Scroll Tabs -->
+                <div class="mobile-tabs-container">
+                    <div class="mobile-tabs-scroll">
+                        {% for card in expertise_cards %}
+                        <button class="mobile-tab-btn {% if forloop.first %}active{% endif %}" data-target="mob-card-{{ card.id }}">
+                            {{ card.title }}
+                        </button>
+                        {% endfor %}
                     </div>
-                    <div class="service-item">
-                        <h3>{% trans "✅ Практический Комплаенс" %}</h3>
-                        <p>{% trans "Мы готовим яхту к сертификации IACS/IMO, концентрируясь на реальной защите и отказоустойчивости систем, а не на бумажной бюрократии." %}</p>
+                </div>
+
+                <!-- Content Area -->
+                <div class="mobile-content-area">
+                    {% for card in expertise_cards %}
+                    <div id="mob-card-{{ card.id }}" class="mobile-card-content {% if forloop.first %}active{% endif %}">
+                        {% if card.image %}
+                        <img src="{{ card.image.url }}" alt="{{ card.title }}" class="mobile-card-image">
+                        {% endif %}
+                        <div class="mobile-card-body">
+                            <h3>{{ card.title }}</h3>
+                            <div class="mobile-card-text">
+                                {{ card.full_content|safe }}
+                            </div>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -106,22 +137,13 @@
             <div class="container">
                 <h2>{% trans "Меню Услуг" %}</h2>
                 <div class="grid grid--2">
-                    <div class="service-item">
-                        <h3>{% trans "🔒 VIP Privacy Shield" %}</h3>
-                        <p>{% trans "Защита смартфонов и ноутбуков владельца, создание безопасных каналов для конфиденциальных переговоров, защита от цифровой слежки." %}</p>
+                    {% for service in services %}
+                    <div class="service-item" onclick="expandCard(this)">
+                        <div class="close-btn" onclick="event.stopPropagation(); closeCard(this.parentNode)">×</div>
+                        <h3>{{ service.title }}</h3>
+                        <p>{{ service.description }}</p>
                     </div>
-                    <div class="service-item">
-                        <h3>{% trans "📡 Навигация и OT-Security" %}</h3>
-                        <p>{% trans "Изоляция критических систем (ECDIS, Engine Control), защита от спуфинга GPS и контроль удаленного доступа к машинному отделению." %}</p>
-                    </div>
-                    <div class="service-item">
-                        <h3>{% trans "👁️ 24/7 Мониторинг и Реагирование" %}</h3>
-                        <p>{% trans "Постоянная кибер-охрана, немедленная нейтрализация угроз, расследования инцидентов (Digital Forensics)." %}</p>
-                    </div>
-                    <div class="service-item">
-                        <h3>{% trans "📜 Pre-Compliance & Crew Training" %}</h3>
-                        <p>{% trans "Подготовка к инспекциям IACS/IMO, обучение экипажа процедурам кибербезопасности и противодействию фишингу." %}</p>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -142,7 +164,7 @@
                     </div>
                     <div class="card" style="border: 1px solid var(--accent-dark);">
                         <div style="font-size: 2rem; color: var(--accent); margin-bottom: 1rem;">3</div>
-                        <h3>{% trans "Персонализированный План" %}</h3>
+                        <h3>{% trans "Целевой План" %}</h3>
                         <p>{% trans "Мы предоставляем Отчет с точным списком критических разрывов и планом их устранения." %}</p>
                     </div>
                 </div>
@@ -163,8 +185,387 @@
 
     <footer style="padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4rem;">
         <div class="container">
-            <p>&copy; 2025 Vassta Yacht Cybersecurity. {% trans "All rights reserved." %}</p>
+            <p>
+                &copy; 2025 Vassta Yacht Cybersecurity. {% trans "All rights reserved." %}
+                <br>
+                <a href="{% url 'pages:legal_document' slug='privacy-policy' %}" target="_blank" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; margin-top: 0.5rem; display: inline-block;">{% translate "Privacy Policy" context "footer" %}</a>
+            </p>
         </div>
     </footer>
+
+    <!-- Expertise Modal -->
+    <div class="modal-overlay" id="expertise-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="close-expertise-modal">&times;</button>
+            <div class="modal-header">
+                <h2>{% trans "Техническая Экспертиза" %}</h2>
+            </div>
+            
+            <div class="gallery-container" id="gallery-view">
+                {% for card in expertise_cards %}
+                <div class="gallery-card" data-target="detail-{{ card.id }}" style="cursor: pointer;">
+                    {% if card.image %}
+                    <img src="{{ card.image.url }}" alt="{{ card.title }}">
+                    {% endif %}
+                    <h3>{{ card.title }}</h3>
+                    <p>{{ card.short_description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="detail-container" id="detail-view" style="display: none; opacity: 0;">
+                <button class="btn-back" id="back-to-gallery">← {% trans "Назад" %}</button>
+                <div id="detail-content-placeholder"></div>
+            </div>
+
+            <!-- Hidden content for details -->
+            <div style="display: none;">
+                {% for card in expertise_cards %}
+                <div id="detail-{{ card.id }}">
+                    {% if card.image %}
+                    <img src="{{ card.image.url }}" alt="{{ card.title }}" style="width: 100%; height: 300px; object-fit: cover; margin-bottom: 2rem; border: 1px solid var(--accent-primary);">
+                    {% endif %}
+                    <h3 style="color: var(--accent-primary); font-size: 2rem; margin-bottom: 1rem;">{{ card.title }}</h3>
+                    <div class="detail-body" style="color: var(--text-secondary); line-height: 1.6;">
+                        {{ card.full_content|safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements ---
+            const modal = document.getElementById('expertise-modal');
+            const navExpertiseLink = document.getElementById('nav-expertise-link');
+            const closeBtn = document.getElementById('close-expertise-modal');
+            const galleryView = document.getElementById('gallery-view');
+            const detailView = document.getElementById('detail-view');
+            const backBtn = document.getElementById('back-to-gallery');
+            const detailPlaceholder = document.getElementById('detail-content-placeholder');
+
+            // Mobile Elements
+            const langToggle = document.getElementById('lang-toggle');
+            const langMenu = document.getElementById('lang-switch-menu');
+            const mobileTabs = document.querySelectorAll('.mobile-tab-btn');
+            const mobileContents = document.querySelectorAll('.mobile-card-content');
+
+            // --- Mobile Logic ---
+
+            // Language Switcher Toggle
+            if (langToggle && langMenu) {
+                langToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    langMenu.classList.toggle('active');
+                    langToggle.classList.toggle('active');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+                        langMenu.classList.remove('active');
+                        langToggle.classList.remove('active');
+                    }
+                });
+            }
+
+            // Expertise Link Handler
+            if (navExpertiseLink) {
+                navExpertiseLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.innerWidth <= 768) {
+                        // Mobile: Scroll to section
+                        const mobileSection = document.getElementById('mobile-expertise-section');
+                        if (mobileSection) {
+                            const headerOffset = 100; // Adjust for fixed header
+                            const elementPosition = mobileSection.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                            
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: "smooth"
+                            });
+                        }
+                    } else {
+                        // Desktop: Open Modal
+                        if (modal) {
+                            modal.classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                            resetView();
+                        }
+                    }
+                });
+            }
+
+            // Mobile Tabs Logic
+            mobileTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    mobileTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Hide all contents
+                    mobileContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Show target content
+                    const targetId = this.getAttribute('data-target');
+                    const targetContent = document.getElementById(targetId);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+
+            // --- Desktop Modal Logic ---
+
+            // Close Modal
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeModal);
+            }
+
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+
+            function closeModal() {
+                if (modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    setTimeout(resetView, 300);
+                }
+            }
+
+            function resetView() {
+                if (galleryView && detailView) {
+                    galleryView.style.display = 'flex';
+                    setTimeout(() => {
+                        galleryView.classList.remove('fade-out');
+                    }, 10);
+                    detailView.style.display = 'none';
+                    detailView.classList.remove('active');
+                    if (detailPlaceholder) detailPlaceholder.innerHTML = '';
+                }
+            }
+
+            // Card Click (Desktop Gallery)
+            const cards = document.querySelectorAll('.gallery-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    // Note: The content is inside the hidden div in the modal, but we can also grab it from the mobile content if needed, 
+                    // but the original logic used a hidden div. Let's check if that hidden div still exists.
+                    // It does, I didn't remove it.
+                    const contentElement = document.getElementById(targetId); // This targets the hidden div inside modal-content
+                    
+                    // Wait, the mobile content uses IDs like "mob-card-{{ card.id }}".
+                    // The desktop modal uses "detail-{{ card.id }}".
+                    // So we are safe.
+                    
+                    if (contentElement && galleryView && detailView) {
+                        const content = contentElement.innerHTML;
+                        
+                        galleryView.classList.add('fade-out');
+                        
+                        setTimeout(() => {
+                            galleryView.style.display = 'none';
+                            detailView.style.display = 'block';
+                            if (detailPlaceholder) detailPlaceholder.innerHTML = content;
+                            
+                            // Trigger reflow
+                            void detailView.offsetWidth;
+                            
+                            detailView.classList.add('active');
+                        }, 500);
+                    }
+                });
+            });
+
+            // Back Button
+            if (backBtn) {
+                backBtn.addEventListener('click', function() {
+                    if (detailView && galleryView) {
+                        detailView.classList.remove('active');
+                        
+                        setTimeout(() => {
+                            detailView.style.display = 'none';
+                            galleryView.style.display = 'flex';
+                            
+                            // Trigger reflow
+                            void galleryView.offsetWidth;
+                            
+                            galleryView.classList.remove('fade-out');
+                        }, 500);
+                    }
+                });
+            }
+        });
+    </script>
+    <div id="overlay" class="overlay" onclick="closeAllCards()"></div>
+
+    <!-- Cookie Banner -->
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-banner__content">
+            <div class="cookie-banner__text">
+                {% trans "We use cookies to improve the site's performance and analyze traffic. By continuing to use the site, you agree to our" %} <a href="#">{% trans "Privacy Policy" %}</a>.
+            </div>
+            <div class="cookie-banner__actions">
+                <button class="btn btn--primary" onclick="acceptCookies()">{% trans "Accept" %}</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Language Suggestion Toast -->
+    <div id="lang-toast" class="lang-toast">
+        <div class="lang-toast__content">
+            <span>Select Language / Выберите язык:</span>
+            <div class="lang-toast__buttons">
+                <button onclick="selectLanguage('{{ lang_urls.en }}')">EN</button>
+                <button onclick="selectLanguage('{{ lang_urls.ru }}')">RU</button>
+                <button onclick="selectLanguage('{{ lang_urls.el }}')">EL</button>
+            </div>
+            <button class="lang-toast__close" onclick="closeLangToast()">×</button>
+        </div>
+    </div>
+
+    <script>
+        // Cookie Logic
+        function checkCookieConsent() {
+            if (!localStorage.getItem('cookie_consent')) {
+                document.getElementById('cookie-banner').style.display = 'block';
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookie_consent', 'true');
+            document.getElementById('cookie-banner').style.display = 'none';
+        }
+
+        // Language Selection Logic
+        function checkLanguageSelection() {
+            // Check if user has already selected a language
+            if (!localStorage.getItem('language_selected')) {
+                // Show toast instead of modal
+                setTimeout(() => {
+                    document.getElementById('lang-toast').style.display = 'block';
+                }, 1000); // Small delay for better UX
+            }
+        }
+
+        function selectLanguage(url) {
+            // Set flag in localStorage
+            localStorage.setItem('language_selected', 'true');
+            // Redirect to the custom switch view
+            window.location.href = url;
+        }
+
+        function closeLangToast() {
+            document.getElementById('lang-toast').style.display = 'none';
+            // Optionally set the flag so it doesn't show again this session?
+            // Or maybe we want it to show until they pick one?
+            // Let's set it to true to stop pestering them if they close it.
+            localStorage.setItem('language_selected', 'true');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkCookieConsent();
+            checkLanguageSelection();
+        });
+
+        function expandCard(card) {
+            if (card.classList.contains('expanded')) return;
+            
+            const rect = card.getBoundingClientRect();
+            
+            // Create placeholder to prevent layout shift
+            const placeholder = document.createElement('div');
+            placeholder.style.width = rect.width + 'px';
+            placeholder.style.height = rect.height + 'px';
+            placeholder.className = 'card-placeholder';
+            
+            // Save original state
+            card._originalParent = card.parentNode;
+            card._originalNextSibling = card.nextSibling;
+            card._originalStyles = {
+                position: card.style.position,
+                top: card.style.top,
+                left: card.style.left,
+                width: card.style.width,
+                height: card.style.height,
+                margin: card.style.margin,
+                zIndex: card.style.zIndex
+            };
+            card._placeholder = placeholder;
+
+            // Insert placeholder and move card to body
+            card.parentNode.insertBefore(placeholder, card);
+            document.body.appendChild(card);
+
+            // Set initial position to match grid location
+            card.style.position = 'fixed';
+            card.style.top = rect.top + 'px';
+            card.style.left = rect.left + 'px';
+            card.style.width = rect.width + 'px';
+            card.style.height = rect.height + 'px';
+            card.style.margin = '0';
+            card.style.zIndex = '1000';
+
+            // Force reflow
+            void card.offsetWidth;
+
+            // Animate to center
+            card.classList.add('expanded');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeCard(card) {
+            card.classList.remove('expanded');
+            document.getElementById('overlay').classList.remove('active');
+            
+            // Wait for transition to finish before moving back
+            setTimeout(() => {
+                if (card._placeholder && card._originalParent) {
+                    // Restore original styles
+                    const styles = card._originalStyles || {};
+                    card.style.position = styles.position;
+                    card.style.top = styles.top;
+                    card.style.left = styles.left;
+                    card.style.width = styles.width;
+                    card.style.height = styles.height;
+                    card.style.margin = styles.margin;
+                    card.style.zIndex = styles.zIndex;
+
+                    // Move back to grid
+                    card._originalParent.insertBefore(card, card._originalNextSibling);
+                    card._placeholder.remove();
+                    
+                    // Cleanup
+                    card._placeholder = null;
+                    card._originalParent = null;
+                    card._originalNextSibling = null;
+                    card._originalStyles = null;
+                }
+            }, 300);
+        }
+
+        function closeAllCards() {
+            const expandedCard = document.querySelector('.service-item.expanded');
+            if (expandedCard) {
+                closeCard(expandedCard);
+            }
+        }
+    </script>
 </body>
 </html>

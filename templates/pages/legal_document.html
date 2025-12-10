@@ -1,0 +1,53 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ document.title }} - Vassta Yacht Cybersecurity</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .legal-content {
+            max-width: 800px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+            color: var(--text-primary);
+        }
+        .legal-content h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+        .legal-content div {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="bg-grid"></div>
+    
+    <header class="header">
+        <div class="container header__container">
+            <div class="header__logo"><a href="/" style="text-decoration: none; color: inherit;">VASSTA::COM</a></div>
+        </div>
+    </header>
+
+    <main class="legal-content">
+        <h1>{{ document.title }}</h1>
+        <div>
+            {{ document.content|safe }}
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+        <p>&copy; {% now "Y" %} Vassta Yacht Cybersecurity. All rights reserved.</p>
+    </footer>
+</body>
+</html>
